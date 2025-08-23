@@ -1,5 +1,8 @@
-package com.example.patient.enum;
+package com.example.patient.code;
 
+import lombok.Getter;
+
+@Getter
 public enum GenderCode {
     M("남"),
     F("여");
@@ -8,9 +11,5 @@ public enum GenderCode {
 
     GenderCode(String desc) {
         this.desc = desc;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 }
