@@ -17,14 +17,14 @@ public class Code {
     @EmbeddedId
     private CodePK id;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 100, nullable = false)
     private String codeName;
 
     @Embeddable
     static class CodePK implements Serializable {
-        @Column(length = 10)
+        @Column(length = 30)
         private String codeGroup;
-        @Column(length = 10)
+        @Column(length = 30)
         private String code;
     }
 }

@@ -12,10 +12,10 @@ import lombok.*;
 @Getter
 public class CodeGroup {
     @Id
-    @Column(length = 10)
+    @Column(length = 30)
     private String codeGroup;
-    @Column(length = 10, nullable = false)
+    @Column(length = 30, nullable = false)
     private String codeGroupName;
-    @Column(length = 10)
+    @Column(length = 100)
     private String description;
 }
