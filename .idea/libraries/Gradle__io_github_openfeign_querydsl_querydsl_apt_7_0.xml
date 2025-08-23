@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: io.github.openfeign.querydsl:querydsl-apt:7.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="io.github.openfeign.querydsl" artifactId="querydsl-apt" version="7.0" baseVersion="7.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.openfeign.querydsl/querydsl-apt/7.0/7948d536a373d205f4432b7eef137b99b6da307e/querydsl-apt-7.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
