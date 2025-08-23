@@ -4,6 +4,7 @@ import com.example.patient.code.GenderCode;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +32,7 @@ public class Patient {
     @Column(length = 10, nullable = false)
     private GenderCode genderCode;
 
-    @Column(length = 10, nullable = false)
-    private String birthDate; // yyyy-MM-dd
+    private LocalDate birthDate;
 
     @Column(length = 20, nullable = false)
     private String mobilePhoneNumber;
