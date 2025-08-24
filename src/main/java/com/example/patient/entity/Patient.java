@@ -23,6 +23,7 @@ public class Patient {
     private Hospital hospital;
 
     @Column(length = 45, nullable = false)
+    @Setter
     private String name;
 
     @Column(length = 13, nullable = false, unique = true)
@@ -32,9 +33,11 @@ public class Patient {
     @Column(length = 10, nullable = false)
     private GenderCode genderCode;
 
+    @Setter
     private LocalDate birthDate;
 
     @Column(length = 20, nullable = false)
+    @Setter
     private String mobilePhoneNumber;
 
     @OneToMany(mappedBy = "patient")

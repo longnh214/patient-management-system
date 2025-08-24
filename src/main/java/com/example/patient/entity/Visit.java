@@ -29,6 +29,7 @@ public class Visit {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10, nullable = false)
+    @Setter
     private VisitStatusCode visitStatusCode;
 }
 
