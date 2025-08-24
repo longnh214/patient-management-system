@@ -1,12 +1,19 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.4'
-	id 'io.spring.dependency-management' version '1.1.7'
+	id "java"
+	id "org.springframework.boot" version "3.5.4"
+	id "io.spring.dependency-management" version "1.1.7"
 }
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
-description = 'patient-management-system'
+def queryDslVersion = "7.0"
+def querydslSrcDir  = layout.buildDirectory.dir("generated/querydsl").get().asFile
+
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(querydslSrcDir))
+}
+
+group = "com.example"
+version = "0.0.1-SNAPSHOT"
+description = "patient-management-system"
 
 java {
 	toolchain {
@@ -18,20 +25,32 @@ repositories {
 	mavenCentral()
 }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'io.github.openfeign.querydsl:querydsl-jpa:7.0'
-	implementation 'io.github.openfeign.querydsl:querydsl-apt:7.0'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+sourceSets {
+	main {
+		java {
+			srcDirs += querydslSrcDir
+		}
+	}
+}
+configurations {
+	querydsl.extendsFrom compileClasspath
 }
 
-tasks.named('test') {
+dependencies {
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+	implementation "org.springframework.boot:spring-boot-starter-web"
+	implementation "io.github.openfeign.querydsl:querydsl-jpa:${queryDslVersion}"
+	implementation "io.github.openfeign.querydsl:querydsl-apt:${queryDslVersion}"
+	developmentOnly "org.springframework.boot:spring-boot-devtools"
+	runtimeOnly "com.h2database:h2"
+	compileOnly "org.projectlombok:lombok"
+	annotationProcessor "org.projectlombok:lombok"
+	annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+	testAnnotationProcessor "org.projectlombok:lombok"
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+tasks.named("test") {
 	useJUnitPlatform()
 }
