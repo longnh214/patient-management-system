@@ -31,6 +31,7 @@ public class Patient {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10, nullable = false)
+    @Setter
     private GenderCode genderCode;
 
     @Setter
