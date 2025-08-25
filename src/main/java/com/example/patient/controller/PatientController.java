@@ -78,8 +78,8 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PatientDto.Response>> list() {
-        List<PatientDto.Response> patients = patientService.getPatients();
+    public ResponseEntity<List<PatientDto.Response>> list(PatientDto.SearchCondition searchCondition) {
+        List<PatientDto.Response> patients = patientService.getPatients(searchCondition);
         return ResponseEntity.ok(patients);
     }
 }
