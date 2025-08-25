@@ -140,13 +140,80 @@ public class PatientServiceIntegrationTest {
                 .birthDate(LocalDate.of(1992, 2, 2))
                 .mobilePhoneNumber("01088887777").build());
 
+        PatientDto.SearchCondition searchCondition = PatientDto.SearchCondition.builder()
+                .name("김철수")
+                .build();
+
         // when
-        List<PatientDto.Response> dtos = patientService.getPatients();
+        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
 
         // then
-        assertThat(dtos).isNotNull();
-        assertThat(dtos.size()).isGreaterThanOrEqualTo(2);
-        assertThat(dtos.stream().anyMatch(dto -> dto.getName().equals("홍길동"))).isTrue();
-        assertThat(dtos.stream().anyMatch(dto -> dto.getName().equals("김철수"))).isTrue();
+        assertThat(results).isNotNull();
+        assertThat(results.size()).isGreaterThanOrEqualTo(1);
+        assertThat(results.stream().anyMatch(dto -> dto.getName().equals("홍길동"))).isFalse();
+        assertThat(results.stream().anyMatch(dto -> dto.getName().equals("김철수"))).isTrue();
+    }
+
+    @Test
+    void testGetPatients_failure_noMatch() {
+        // given
+        patientRepository.save(Patient.builder()
+                .hospital(hospital)
+                .name("홍길동")
+                .registrationNumber(patientService.generateRegistrationNumber(hospital.getId()))
+                .genderCode(GenderCode.F)
+                .birthDate(LocalDate.of(1991, 1, 1))
+                .mobilePhoneNumber("01012349876")
+                .build());
+
+        PatientDto.SearchCondition searchCondition = PatientDto.SearchCondition.builder()
+                .name("없는이름")
+                .build();
+
+        // when
+        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
+
+        // then
+        assertThat(results).isNotNull();
+        assertThat(results).isEmpty();
+    }
+
+    @Test
+    void testGetPatients_success_filterByBirthDateAndRegistrationNumber() {
+        // given
+        Patient patient = patientRepository.save(Patient.builder()
+                .hospital(hospital)
+                .name("박지민")
+                .registrationNumber("REG20250001")
+                .genderCode(GenderCode.M)
+                .birthDate(LocalDate.of(2000, 5, 15))
+                .mobilePhoneNumber("01099998888")
+                .build());
+
+        PatientDto.SearchCondition searchCondition = PatientDto.SearchCondition.builder()
+                .birthDate("2000-05-15")
+                .registrationNumber("REG20250001")
+                .build();
+
+        // when
+        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
+
+        // then
+        assertThat(results).isNotNull();
+        assertThat(results.size()).isGreaterThanOrEqualTo(1);
+        assertThat(results.get(0).getName()).isEqualTo("박지민");
+    }
+
+    @Test
+    void testGetPatients_failure_emptySearchCondition() {
+        // given
+        PatientDto.SearchCondition searchCondition = PatientDto.SearchCondition.builder()
+                .build();
+
+        // when
+        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
+
+        // then
+        assertThat(results).isNotNull();
     }
 }
