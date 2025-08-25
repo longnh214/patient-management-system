@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
+public class PatientRepositoryImpl implements PatientRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
