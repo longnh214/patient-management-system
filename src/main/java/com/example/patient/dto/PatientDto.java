@@ -79,4 +79,12 @@ public class PatientDto {
         private PatientDto.Response patient;
         private List<VisitDto.Response> visits;
     }
+
+    @Getter
+    @Builder
+    public static class SearchCondition {
+        private String name;
+        private String registrationNumber;
+        private String birthDate;
+    }
 }
