@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,13 +20,10 @@ public class PatientService {
     private final HospitalRepository hospitalRepository;
 
     @Transactional(readOnly = true)
-    public List<PatientDto.Response> getPatients(){
-        List<Patient> patients = patientRepository.findAll();
-        List<PatientDto.Response> dtos = patients.stream()
-                .map(PatientDto.Response::toDto)
-                .collect(Collectors.toList());
+    public List<PatientDto.Response> getPatients(PatientDto.SearchCondition searchCondition){
+        List<PatientDto.Response> patients = patientRepository.searchFromSearchCondition(searchCondition);
 
-        return dtos;
+        return patients;
     }
 
     @Transactional
