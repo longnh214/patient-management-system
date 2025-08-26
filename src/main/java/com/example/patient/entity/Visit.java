@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long patientVisitId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospitalId", nullable = false)
@@ -25,6 +25,7 @@ public class Visit {
     private Patient patient;
 
     @Column(nullable = false)
+    @Setter
     private LocalDateTime receptionDateTime;
 
     @Enumerated(EnumType.STRING)
