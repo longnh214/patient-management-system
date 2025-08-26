@@ -58,9 +58,10 @@ public class VisitService {
 
     @Transactional
     public VisitDto.Response update(VisitDto.Update dto) {
-        Visit visit = visitRepository.findById(dto.getPatientVisitId())
+        Visit visit = visitRepository.findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
         visit.setVisitStatusCode(VisitStatusCode.valueOf(dto.getVisitStatusCode()));
+        visit.setReceptionDateTime(dto.getReceptionDateTime());
         return VisitDto.Response.toDto(visit);
     }
 
