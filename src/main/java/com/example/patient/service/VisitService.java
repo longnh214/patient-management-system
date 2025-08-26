@@ -23,8 +23,18 @@ public class VisitService {
     private final PatientRepository patientRepository;
 
     @Transactional(readOnly = true)
-    public List<VisitDto.Response> getVisits(Long id){
-        List<Visit> visits = visitRepository.findAllByPatientId(id);
+    public List<VisitDto.Response> getVisits(){
+        List<Visit> visits = visitRepository.findAll();
+        List<VisitDto.Response> visitDtos = visits.stream()
+                .map(VisitDto.Response::toDto)
+                .collect(Collectors.toList());
+
+        return visitDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public List<VisitDto.Response> getVisits(Long patientId){
+        List<Visit> visits = visitRepository.findAllByPatientId(patientId);
         List<VisitDto.Response> visitDtos = visits.stream()
                 .map(VisitDto.Response::toDto)
                 .collect(Collectors.toList());

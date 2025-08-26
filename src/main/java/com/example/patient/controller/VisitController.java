@@ -52,9 +52,9 @@ public class VisitController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/patient/{patientId}")
-    public ResponseEntity<List<VisitDto.Response>> list(@PathVariable Long patientId) {
-        List<VisitDto.Response> visits = visitService.getVisits(patientId);
+    @GetMapping
+    public ResponseEntity<List<VisitDto.Response>> list() {
+        List<VisitDto.Response> visits = visitService.getVisits();
         return ResponseEntity.ok(visits);
     }
 }
