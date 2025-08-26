@@ -9,10 +9,10 @@ public enum TreatmentTypeCode {
     D("약처방"),
     T("검사");
 
-    private final String description;
+    private final String desc;
 
-    TreatmentTypeCode(String description) {
-        this.description = description;
+    TreatmentTypeCode(String desc) {
+        this.desc = desc;
     }
 
     public static TreatmentTypeCode fromCode(String code) {
