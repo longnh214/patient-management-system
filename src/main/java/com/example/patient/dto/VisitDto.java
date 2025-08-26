@@ -28,7 +28,7 @@ public class VisitDto {
     @Getter
     @Builder
     public static class Response {
-        private Long patientVisitId;
+        private Long id;
         private Long hospitalId;
         private Long patientId;
         private LocalDateTime receptionDateTime;
@@ -36,7 +36,7 @@ public class VisitDto {
 
         public static Response toDto(Visit entity) {
             return Response.builder()
-                    .patientVisitId(entity.getPatientVisitId())
+                    .id(entity.getId())
                     .hospitalId(entity.getHospital().getId())
                     .patientId(entity.getPatient().getId())
                     .receptionDateTime(entity.getReceptionDateTime())
@@ -48,13 +48,15 @@ public class VisitDto {
     @Getter
     @Builder
     public static class Update {
-        private Long patientVisitId;
+        private Long id;
         private String visitStatusCode;
+        private LocalDateTime receptionDateTime;
 
         public static Update toDto(Visit entity) {
             return Update.builder()
-                    .patientVisitId(entity.getPatientVisitId())
+                    .id(entity.getId())
                     .visitStatusCode(entity.getVisitStatusCode().name())
+                    .receptionDateTime(entity.getReceptionDateTime())
                     .build();
         }
     }
