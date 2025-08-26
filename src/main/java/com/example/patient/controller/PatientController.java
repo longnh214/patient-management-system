@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/patient")
+@RequestMapping("/api/patient")
 public class PatientController {
     private final PatientService patientService;
     private final VisitService visitService;
@@ -22,7 +22,7 @@ public class PatientController {
     @PostMapping
     public ResponseEntity<PatientDto.Response> create(@RequestBody PatientDto.Request request) {
         String newRegistrationNumber = patientService.generateRegistrationNumber(request.getHospitalId());
-        PatientDto.Request reqWithRegNum = PatientDto.Request.builder()
+        PatientDto.Request requestDto = PatientDto.Request.builder()
                 .hospitalId(request.getHospitalId())
                 .name(request.getName())
                 .registrationNumber(newRegistrationNumber)
@@ -31,7 +31,7 @@ public class PatientController {
                 .mobilePhoneNumber(request.getMobilePhoneNumber())
                 .build();
 
-        PatientDto.Response responseDto = patientService.create(reqWithRegNum);
+        PatientDto.Response responseDto = patientService.create(requestDto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
