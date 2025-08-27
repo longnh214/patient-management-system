@@ -1,9 +1,9 @@
 package com.example.patient.repository.query;
 
 import com.example.patient.dto.PatientDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 public interface PatientRepositoryCustom {
-    List<PatientDto.Response> searchFromSearchCondition(PatientDto.SearchCondition searchCondition);
+    Page<PatientDto.Response> searchFromSearchCondition(PatientDto.SearchCondition searchCondition, PageRequest pageRequest);
 }

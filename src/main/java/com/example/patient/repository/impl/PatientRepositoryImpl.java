@@ -1,11 +1,16 @@
 package com.example.patient.repository.impl;
 
 import com.example.patient.dto.PatientDto;
+import com.example.patient.entity.Patient;
 import com.example.patient.entity.QPatient;
 import com.example.patient.repository.query.PatientRepositoryCustom;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -17,19 +22,24 @@ public class PatientRepositoryImpl implements PatientRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<PatientDto.Response> searchFromSearchCondition(PatientDto.SearchCondition condition) {
+    public Page<PatientDto.Response> searchFromSearchCondition(PatientDto.SearchCondition condition, PageRequest pageRequest) {
         QPatient patient = QPatient.patient;
 
-        return queryFactory.selectFrom(patient)
+        QueryResults<Patient> results = queryFactory.selectFrom(patient)
                 .where(
                         nameContains(condition.getName()),
                         registrationNumberEq(condition.getRegistrationNumber()),
                         birthDateEq(condition.getBirthDate())
                 )
-                .fetch()
-                .stream()
+                .limit(pageRequest.getPageSize())
+                .offset(pageRequest.getOffset())
+                .fetchResults();
+
+        List<PatientDto.Response> content = results.getResults().stream()
                 .map(PatientDto.Response::toDto)
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(content, pageRequest, results.getTotal());
     }
 
     private BooleanExpression nameContains(String name) {
