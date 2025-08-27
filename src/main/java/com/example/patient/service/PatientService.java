@@ -1,17 +1,19 @@
 package com.example.patient.service;
 
 import com.example.patient.code.GenderCode;
+import com.example.patient.constant.PageInfo;
 import com.example.patient.dto.PatientDto;
 import com.example.patient.entity.Hospital;
 import com.example.patient.entity.Patient;
 import com.example.patient.repository.HospitalRepository;
 import com.example.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +22,8 @@ public class PatientService {
     private final HospitalRepository hospitalRepository;
 
     @Transactional(readOnly = true)
-    public List<PatientDto.Response> getPatients(PatientDto.SearchCondition searchCondition){
-        List<PatientDto.Response> patients = patientRepository.searchFromSearchCondition(searchCondition);
-
+    public Page<PatientDto.Response> getPatients(PatientDto.SearchCondition searchCondition, PageInfo pageInfo){
+        Page<PatientDto.Response> patients = patientRepository.searchFromSearchCondition(searchCondition, PageRequest.of(pageInfo.getPageNo() - 1, pageInfo.getPageSize()));
         return patients;
     }
 
