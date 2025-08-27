@@ -1,10 +1,12 @@
 package com.example.patient.controller;
 
+import com.example.patient.constant.PageInfo;
 import com.example.patient.dto.PatientDto;
 import com.example.patient.dto.VisitDto;
 import com.example.patient.service.PatientService;
 import com.example.patient.service.VisitService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -78,8 +80,8 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PatientDto.Response>> list(PatientDto.SearchCondition searchCondition) {
-        List<PatientDto.Response> patients = patientService.getPatients(searchCondition);
+    public ResponseEntity<Page<PatientDto.Response>> list(PatientDto.SearchCondition searchCondition, PageInfo pageInfo) {
+        Page<PatientDto.Response> patients = patientService.getPatients(searchCondition, pageInfo);
         return ResponseEntity.ok(patients);
     }
 }
