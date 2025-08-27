@@ -1,6 +1,7 @@
 package com.example.patient.service;
 
 import com.example.patient.code.GenderCode;
+import com.example.patient.constant.PageInfo;
 import com.example.patient.dto.PatientDto;
 import com.example.patient.entity.Hospital;
 import com.example.patient.entity.Patient;
@@ -10,10 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,12 +38,11 @@ public class PatientServiceIntegrationTest {
                 .institutionNumber("Y0001")
                 .hospitalDirectorName("홍길동")
                 .build();
-        hospital = hospitalRepository.save(hospital); // 영속화된 병원 객체
+        hospital = hospitalRepository.save(hospital);
     }
 
     @Test
     void testCreateAndReadPatient_success() {
-        // given
         String regNum = patientService.generateRegistrationNumber(hospital.getId());
         PatientDto.Request request = PatientDto.Request.builder()
                 .hospitalId(hospital.getId())
@@ -53,10 +53,8 @@ public class PatientServiceIntegrationTest {
                 .mobilePhoneNumber("01099998888")
                 .build();
 
-        // when
         PatientDto.Response response = patientService.create(request);
 
-        // then
         assertThat(response).isNotNull();
         assertThat(response.getHospitalId()).isEqualTo(hospital.getId());
         assertThat(response.getName()).isEqualTo("테스터환자");
@@ -72,7 +70,6 @@ public class PatientServiceIntegrationTest {
 
     @Test
     void testUpdatePatient_success() {
-        // given
         Patient patient = Patient.builder()
                 .hospital(hospital)
                 .name("업데이트전")
@@ -91,10 +88,8 @@ public class PatientServiceIntegrationTest {
                 .mobilePhoneNumber("01055558888")
                 .build();
 
-        // when
         PatientDto.Response updated = patientService.update(updateDto);
 
-        // then
         assertThat(updated.getName()).isEqualTo("업데이트후");
         assertThat(updated.getGenderCode()).isEqualTo("F");
         assertThat(updated.getBirthDate()).isEqualTo("2001-09-09");
@@ -103,7 +98,6 @@ public class PatientServiceIntegrationTest {
 
     @Test
     void testDeletePatient_success() {
-        // given
         Patient patient = Patient.builder()
                 .hospital(hospital)
                 .name("삭제테스트")
@@ -114,49 +108,41 @@ public class PatientServiceIntegrationTest {
                 .build();
         patient = patientRepository.save(patient);
 
-        // when
         patientService.delete(patient.getId());
 
-        // then
         assertThat(patientRepository.findById(patient.getId())).isEmpty();
     }
 
     @Test
     void testGetPatients_success() {
         // given
-        Patient patient1 = patientRepository.save(Patient.builder()
-                .hospital(hospital)
-                .name("홍길동")
-                .registrationNumber(patientService.generateRegistrationNumber(hospital.getId()))
-                .genderCode(GenderCode.F)
-                .birthDate(LocalDate.of(1991, 1, 1))
-                .mobilePhoneNumber("01012349876").build());
-
-        Patient patient2 = patientRepository.save(Patient.builder()
-                .hospital(hospital)
-                .name("김철수")
-                .registrationNumber(patientService.generateRegistrationNumber(hospital.getId()))
-                .genderCode(GenderCode.M)
-                .birthDate(LocalDate.of(1992, 2, 2))
-                .mobilePhoneNumber("01088887777").build());
+        for(int i=0;i<100;i++) {patientRepository.save(Patient.builder()
+                    .hospital(hospital)
+                    .name("김철수")
+                    .registrationNumber(patientService.generateRegistrationNumber(hospital.getId()))
+                    .genderCode(GenderCode.M)
+                    .birthDate(LocalDate.of(1992, 2, 2))
+                    .mobilePhoneNumber("01088887777")
+                    .build());
+        }
 
         PatientDto.SearchCondition searchCondition = PatientDto.SearchCondition.builder()
                 .name("김철수")
                 .build();
 
-        // when
-        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
+        PageInfo pageInfo = new PageInfo(3, 10);
 
-        // then
+        Page<PatientDto.Response> results = patientService.getPatients(searchCondition, pageInfo);
+
         assertThat(results).isNotNull();
-        assertThat(results.size()).isGreaterThanOrEqualTo(1);
-        assertThat(results.stream().anyMatch(dto -> dto.getName().equals("홍길동"))).isFalse();
-        assertThat(results.stream().anyMatch(dto -> dto.getName().equals("김철수"))).isTrue();
+        assertThat(results.getContent().get(0).getRegistrationNumber()).isEqualTo(String.format("%04d", hospital.getId()) + String.format("%05d", 21));
+        assertThat(results.getContent().size()).isEqualTo(10);
+        assertThat(results.getContent().stream().anyMatch(dto -> dto.getName().equals("홍길동"))).isFalse();
+        assertThat(results.getContent().stream().anyMatch(dto -> dto.getName().equals("김철수"))).isTrue();
     }
 
     @Test
     void testGetPatients_failure_noMatch() {
-        // given
         patientRepository.save(Patient.builder()
                 .hospital(hospital)
                 .name("홍길동")
@@ -170,21 +156,20 @@ public class PatientServiceIntegrationTest {
                 .name("없는이름")
                 .build();
 
-        // when
-        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
+        PageInfo pageInfo = new PageInfo(1, 10);
 
-        // then
+        Page<PatientDto.Response> results = patientService.getPatients(searchCondition, pageInfo);
+
         assertThat(results).isNotNull();
-        assertThat(results).isEmpty();
+        assertThat(results.isEmpty()).isTrue();
     }
 
     @Test
     void testGetPatients_success_filterByBirthDateAndRegistrationNumber() {
-        // given
-        Patient patient = patientRepository.save(Patient.builder()
+        patientRepository.save(Patient.builder()
                 .hospital(hospital)
                 .name("박지민")
-                .registrationNumber("REG20250001")
+                .registrationNumber("000500028")
                 .genderCode(GenderCode.M)
                 .birthDate(LocalDate.of(2000, 5, 15))
                 .mobilePhoneNumber("01099998888")
@@ -192,28 +177,27 @@ public class PatientServiceIntegrationTest {
 
         PatientDto.SearchCondition searchCondition = PatientDto.SearchCondition.builder()
                 .birthDate("2000-05-15")
-                .registrationNumber("REG20250001")
+                .registrationNumber("000500028")
                 .build();
 
-        // when
-        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
+        PageInfo pageInfo = new PageInfo(1, 10);
 
-        // then
+        Page<PatientDto.Response> results = patientService.getPatients(searchCondition, pageInfo);
+
         assertThat(results).isNotNull();
-        assertThat(results.size()).isGreaterThanOrEqualTo(1);
-        assertThat(results.get(0).getName()).isEqualTo("박지민");
+        assertThat(results.getContent().size()).isGreaterThanOrEqualTo(1);
+        assertThat(results.getContent().get(0).getName()).isEqualTo("박지민");
     }
 
     @Test
     void testGetPatients_failure_emptySearchCondition() {
-        // given
         PatientDto.SearchCondition searchCondition = PatientDto.SearchCondition.builder()
                 .build();
 
-        // when
-        List<PatientDto.Response> results = patientService.getPatients(searchCondition);
+        PageInfo pageInfo = new PageInfo(1, 10);
 
-        // then
+        Page<PatientDto.Response> results = patientService.getPatients(searchCondition, pageInfo);
+
         assertThat(results).isNotNull();
     }
 }
