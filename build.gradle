@@ -2,6 +2,7 @@ plugins {
 	id "java"
 	id "org.springframework.boot" version "3.5.4"
 	id "io.spring.dependency-management" version "1.1.7"
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 def queryDslVersion = "7.0"
@@ -32,8 +33,10 @@ sourceSets {
 		}
 	}
 }
+
 configurations {
 	querydsl.extendsFrom compileClasspath
+	asciidoctorExt
 }
 
 dependencies {
@@ -46,11 +49,48 @@ dependencies {
 	compileOnly "org.projectlombok:lombok"
 	annotationProcessor "org.projectlombok:lombok"
 	annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testAnnotationProcessor "org.projectlombok:lombok"
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExt'
+	dependsOn test
+	baseDirFollowsSourceFile()
+}
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+tasks.register('copyDocument', Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}
+
 tasks.named("test") {
 	useJUnitPlatform()
+}
+
+bootJar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
 }
