@@ -51,9 +51,10 @@ H2 접속 host와 port를 정확히 기입하고 실행하시면 정상 작동�
 
 ## spring-restdocs 기반 API 문서 조회
 
-1. `gradle`의 `copyDocument` 명령어를 통해 controller 테스트 코드 기반 `adoc` 파일을 프로젝트 static 폴더에 복사합니다.
+1. `gradle build` 후 `copyDocument` 명령어를 통해 테스트 코드 snippet 기반 asciidoc `index.html` 파일을 프로젝트 static 폴더에 복사합니다.
 
 ```shell
+./gradlew clean build
 ./gradlew copyDocument
 ```
 
