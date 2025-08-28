@@ -2,13 +2,13 @@
 
 ## 프로젝트 개요 및 기술 스택/버전
 
-언어: Java 17
-프레임워크: Spring Boot 3.5.4
-데이터베이스: H2 Database
-DB + 엔티티 연동: Spring Data JPA + Openfeign queryDsl
-API 문서화: spring-restdocs
-테스트: JUnit 5 (단위/통합 테스트)
-빌드 도구: Gradle
+- 언어: Java 17
+- 프레임워크: Spring Boot 3.5.4
+- 데이터베이스: H2 Database
+- DB + 엔티티 연동: Spring Data JPA + Openfeign queryDsl
+- API 문서화: spring-restdocs
+- 테스트: JUnit 5 (단위/통합 테스트)
+- 빌드 도구: Gradle
 
 ## 실행 전 application.yml 설정
 
@@ -53,9 +53,15 @@ H2 접속 host와 port를 정확히 기입하고 실행하시면 정상 작동�
 
 1. `gradle build` 후 `copyDocument` 명령어를 통해 테스트 코드 snippet 기반 asciidoc `index.html` 파일을 프로젝트 static 폴더에 복사합니다.
 
-```shell
-./gradlew clean build
-./gradlew copyDocument
-```
+    ```shell
+    ./gradlew clean build
+    ./gradlew copyDocument
+    ```
 
 2. Application 실행 후 `http://localhost:8080/docs/index.html` url에서 API 문서를 볼 수 있습니다.
+
+    ![rest-docs](https://github.com/user-attachments/assets/9812515b-1924-40d2-9a43-6789d55c986c)
+
+### spring-restdocs 참고 URL
+
+[Spring REST Docs로 믿을 수 있는 API 문서 만들기](https://alstn113.tistory.com/32)
