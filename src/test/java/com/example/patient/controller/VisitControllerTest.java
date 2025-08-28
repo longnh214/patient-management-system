@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,23 +21,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Transactional
 class VisitControllerTest {
-
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
-    @Autowired private VisitRepository visitRepository;
-    @Autowired private HospitalRepository hospitalRepository;
-    @Autowired private PatientRepository patientRepository;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private VisitRepository visitRepository;
+    @Autowired
+    private HospitalRepository hospitalRepository;
+    @Autowired
+    private PatientRepository patientRepository;
 
     private Hospital hospital;
     private Patient patient;
@@ -76,18 +82,13 @@ class VisitControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(document("visit-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("hospitalId").description("병원 고유번호"),
                                 fieldWithPath("patientId").description("환자 고유번호"),
                                 fieldWithPath("visitStatusCode").description("방문 상태(VISITING, COMPLETE, CANCELLED)"),
                                 fieldWithPath("receptionDateTime").description("방문(접수) 일시")
-                        ),
-                        responseFields(
-                                fieldWithPath("id").description("방문 고유번호"),
-                                fieldWithPath("hospitalId").description("병원 고유번호"),
-                                fieldWithPath("patientId").description("환자 고유번호"),
-                                fieldWithPath("visitStatusCode").description("방문 상태"),
-                                fieldWithPath("receptionDateTime").description("접수일시")
                         )
                 ));
     }
@@ -113,6 +114,8 @@ class VisitControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("visit-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("id").description("방문 고유번호")
                         ),
@@ -144,6 +147,8 @@ class VisitControllerTest {
         mockMvc.perform(delete("/api/visit/{id}", visit.getId()))
                 .andExpect(status().isNoContent())
                 .andDo(document("visit-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("id").description("방문 고유번호")
                         )
@@ -164,6 +169,8 @@ class VisitControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("visit-read",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("id").description("방문 고유번호")
                         ),
@@ -192,6 +199,8 @@ class VisitControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("visit-list",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("[].id").description("방문 고유번호"),
                                 fieldWithPath("[].hospitalId").description("병원 고유번호"),

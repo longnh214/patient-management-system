@@ -26,7 +26,8 @@ public class VisitController {
                 .buildAndExpand(responseDto.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(responseDto);
+        return ResponseEntity.created(location)
+                .build();
     }
 
     @PutMapping("/{id}")
