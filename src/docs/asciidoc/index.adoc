@@ -1,51 +1,15 @@
-= 환자 방문 관리 시스템
-patient-management-system API Documentation
-v1.0, 2025-08-28
-
-:toc:
-:toclevels: 3
-:sectnums:
-:sectnumlevels: 3
-:source-highlighter: highlightjs
+= 환자 방문 관리 시스템 API 명세서
+:doctype: book
 :icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
 
 == 환자(Patient) API
 
-=== 환자 생성
-include::{snippets}/patient-create/request-fields.adoc[]
-
-include::{snippets}/patient-create/response-fields.adoc[]
-
-=== 환자 수정
-include::{snippets}/patient-update/request-fields.adoc[]
-
-include::{snippets}/patient-update/response-fields.adoc[]
-
-=== 환자 조회
-include::{snippets}/patient-read/response-fields.adoc[]
-
-=== 환자 목록 조회 (검색 조건 없음 결과)
-include::{snippets}/patients-list-empty/query-parameters.adoc[]
-include::{snippets}/patients-list-empty/response-fields.adoc[]
-
-=== 환자 목록 조회 (결과 있음)
-include::{snippets}/patients-list-success/query-parameters.adoc[]
-include::{snippets}/patients-list-success/response-fields.adoc[]
+include::patient.adoc[]
 
 == 방문(Visit) API
 
-=== 방문 생성
-include::{snippets}/visit-create/request-fields.adoc[]
-
-include::{snippets}/visit-create/response-fields.adoc[]
-
-=== 방문 수정
-include::{snippets}/visit-update/request-fields.adoc[]
-
-include::{snippets}/visit-update/response-fields.adoc[]
-
-=== 방문 조회
-include::{snippets}/visit-read/response-fields.adoc[]
-
-=== 방문 목록 조회
-include::{snippets}/visit-list/response-fields.adoc[]
+include::visit.adoc[]

@@ -1,0 +1,14 @@
+=== 환자 생성
+operation::patient-create[]
+
+=== 환자 수정
+operation::patient-update[]
+
+=== 환자 조회
+operation::patient-read[]
+
+=== 환자 목록 조회 (검색 조건 없음 결과)
+operation::patients-list-empty[]
+
+=== 환자 목록 조회 (결과 있음)
+operation::patients-list-success[]
