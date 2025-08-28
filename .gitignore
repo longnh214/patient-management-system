@@ -29,4 +29,4 @@ application-*.yml
 .gradle/*
 build/*
 
-src/resources/static/docs/
+src/resources/static/docs/*
