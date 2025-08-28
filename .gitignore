@@ -30,3 +30,6 @@ application-*.yml
 build/*
 
 src/resources/static/docs/*
+
+.idea/*
+.DS_Store
