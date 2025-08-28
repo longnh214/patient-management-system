@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(RestDocumentationExtension.class)
 @Transactional
 public class PatientControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -79,11 +79,13 @@ public class PatientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(document("patient-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("hospitalId").description("병원 고유번호"),
                                 fieldWithPath("name").description("환자 이름"),
                                 fieldWithPath("genderCode").description("성별 코드"),
-                                fieldWithPath("birthDate").description("생년월일"),
+                                fieldWithPath("birthDate").description("생년월일 (yyyy-MM-dd)"),
                                 fieldWithPath("mobilePhoneNumber").description("핸드폰 번호"),
                                 fieldWithPath("registrationNumber").optional().description("등록 번호 (서버가 생성)")
                         )
@@ -106,6 +108,8 @@ public class PatientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("patient-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("id").description("수정할 환자 고유번호")
                         ),
@@ -113,7 +117,7 @@ public class PatientControllerTest {
                                 fieldWithPath("id").description("환자 고유번호"),
                                 fieldWithPath("name").description("수정된 이름"),
                                 fieldWithPath("genderCode").description("수정된 성별"),
-                                fieldWithPath("birthDate").description("수정된 생년월일"),
+                                fieldWithPath("birthDate").description("수정된 생년월일 (yyyy-MM-dd)"),
                                 fieldWithPath("mobilePhoneNumber").description("수정된 핸드폰 번호")
                         ),
                         responseFields(
@@ -122,7 +126,7 @@ public class PatientControllerTest {
                                 fieldWithPath("name").description("환자 이름"),
                                 fieldWithPath("registrationNumber").description("등록번호"),
                                 fieldWithPath("genderCode").description("성별 코드"),
-                                fieldWithPath("birthDate").description("생년월일"),
+                                fieldWithPath("birthDate").description("생년월일 (yyyy-MM-dd)"),
                                 fieldWithPath("mobilePhoneNumber").description("핸드폰 번호")
                         )
                 ));
@@ -135,6 +139,8 @@ public class PatientControllerTest {
         mockMvc.perform(delete("/api/patient/{id}", target.getId()))
                 .andExpect(status().isNoContent())
                 .andDo(document("patient-delete",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("id").description("삭제할 환자 고유번호")
                         )
@@ -149,6 +155,8 @@ public class PatientControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("patient-read",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("id").description("환자 고유번호")
                         ),
@@ -158,7 +166,7 @@ public class PatientControllerTest {
                                 fieldWithPath("patient.name").description("환자 이름"),
                                 fieldWithPath("patient.registrationNumber").description("등록번호"),
                                 fieldWithPath("patient.genderCode").description("성별 코드"),
-                                fieldWithPath("patient.birthDate").description("생년월일"),
+                                fieldWithPath("patient.birthDate").description("생년월일 (yyyy-MM-dd)"),
                                 fieldWithPath("patient.mobilePhoneNumber").description("핸드폰 번호"),
                                 fieldWithPath("visits").description("환자의 방문목록")
                         )
@@ -176,10 +184,12 @@ public class PatientControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("patients-list-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         queryParameters(
                                 parameterWithName("name").description("환자 이름"),
                                 parameterWithName("registrationNumber").description("등록 번호"),
-                                parameterWithName("birthDate").description("생년월일"),
+                                parameterWithName("birthDate").description("생년월일 (yyyy-MM-dd)"),
                                 parameterWithName("pageNo").description("페이지 번호 (1부터 시작)"),
                                 parameterWithName("pageSize").description("한 페이지당 항목 수")
                         ),
@@ -190,7 +200,7 @@ public class PatientControllerTest {
                                 fieldWithPath("content[].name").optional().description("환자 이름"),
                                 fieldWithPath("content[].registrationNumber").optional().description("등록번호"),
                                 fieldWithPath("content[].genderCode").optional().description("성별 코드"),
-                                fieldWithPath("content[].birthDate").optional().description("생년월일"),
+                                fieldWithPath("content[].birthDate").optional().description("생년월일 (yyyy-MM-dd)"),
                                 fieldWithPath("content[].mobilePhoneNumber").optional().description("핸드폰 번호"),
 
                                 fieldWithPath("pageable").description("페이징 정보"),
@@ -231,10 +241,12 @@ public class PatientControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("patients-list-empty",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         queryParameters(
                                 parameterWithName("name").description("검색 이름"),
                                 parameterWithName("registrationNumber").description("등록 번호"),
-                                parameterWithName("birthDate").description("생년월일"),
+                                parameterWithName("birthDate").description("생년월일 (yyyy-MM-dd)"),
                                 parameterWithName("pageNo").description("페이지 번호"),
                                 parameterWithName("pageSize").description("한 페이지당 항목 수")
                         ),
