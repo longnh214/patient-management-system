@@ -29,7 +29,7 @@ application-*.yml
 .gradle/*
 build/*
 
-src/resources/static/docs/*
+src/main/resources/static/docs/*
 
 .idea/*
 .DS_Store
