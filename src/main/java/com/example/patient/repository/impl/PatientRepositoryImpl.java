@@ -2,6 +2,7 @@ package com.example.patient.repository.impl;
 
 import com.example.patient.dto.PatientDto;
 import com.example.patient.entity.Patient;
+import com.example.patient.entity.QHospital;
 import com.example.patient.entity.QPatient;
 import com.example.patient.repository.query.PatientRepositoryCustom;
 import com.querydsl.core.QueryResults;
@@ -24,8 +25,10 @@ public class PatientRepositoryImpl implements PatientRepositoryCustom {
     @Override
     public Page<PatientDto.Response> searchFromSearchCondition(PatientDto.SearchCondition condition, PageRequest pageRequest) {
         QPatient patient = QPatient.patient;
+        QHospital hospital = QHospital.hospital;
 
         QueryResults<Patient> results = queryFactory.selectFrom(patient)
+                .join(patient.hospital, hospital).fetchJoin()
                 .where(
                         nameContains(condition.getName()),
                         registrationNumberEq(condition.getRegistrationNumber()),
